@@ -34,15 +34,42 @@ const ALLOWED_MIME: Record<string, string> = {
 const MAX_BYTES = 8 * 1024 * 1024;
 
 function parseDataUrl(dataUrl: string): { mime: string; bytes: Buffer } | null {
-  const m = /^data:([^;]{1,64});base64,([A-Za-z0-9+/=\s]+)$/.exec(dataUrl);
+  // Only match well-formed data URLs; no whitespace in the base64 payload
+  const m = /^data:([^;]{1,64});base64,([A-Za-z0-9+/=]+)$/.exec(dataUrl);
   if (!m) return null;
   const mime = m[1].toLowerCase();
   try {
-    const bytes = Buffer.from(m[2].replace(/\s/g, ""), "base64");
+    const bytes = Buffer.from(m[2], "base64");
     return { mime, bytes };
   } catch {
     return null;
   }
+}
+
+/**
+ * Verify the decoded bytes actually start with the magic bytes for the claimed MIME type.
+ * Prevents content-type confusion (e.g. a PHP file uploaded with mime image/png).
+ */
+function hasValidMagicBytes(bytes: Buffer, mime: string): boolean {
+  if (mime === "image/png") {
+    // PNG signature: 89 50 4E 47 0D 0A 1A 0A
+    return (
+      bytes.length >= 8 &&
+      bytes[0] === 0x89 &&
+      bytes[1] === 0x50 &&
+      bytes[2] === 0x4e &&
+      bytes[3] === 0x47 &&
+      bytes[4] === 0x0d &&
+      bytes[5] === 0x0a &&
+      bytes[6] === 0x1a &&
+      bytes[7] === 0x0a
+    );
+  }
+  if (mime === "image/jpeg" || mime === "image/jpg") {
+    // JPEG signature: FF D8 FF
+    return bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+  }
+  return false;
 }
 
 export async function POST(req: Request) {
@@ -68,6 +95,14 @@ export async function POST(req: Request) {
   if (!ext) {
     return NextResponse.json(
       { ok: false, error: `Unsupported image type: ${parsed.mime}` },
+      { status: 400 },
+    );
+  }
+
+  // Verify the file content matches the declared MIME type (prevents type confusion attacks)
+  if (!hasValidMagicBytes(parsed.bytes, parsed.mime)) {
+    return NextResponse.json(
+      { ok: false, error: "File content does not match the declared image type" },
       { status: 400 },
     );
   }

@@ -4,6 +4,7 @@ import { cleanCustomDeviceFrame } from "./custom-frames";
 import { PROJECT_SCHEMA_VERSION, STORAGE_KEY } from "./constants";
 import { DEFAULT_PROJECT } from "./defaults";
 import { coerceLocalized } from "./locale";
+import { sanitizeCssColor, sanitizeImageSrc, sanitizeLocale } from "./sanitize";
 import { cleanScreenshotFit } from "./screenshot-fit";
 import type {
   BackgroundMode,
@@ -49,13 +50,16 @@ function cleanSlideBackground(value: unknown): SlideBackground | undefined {
   if (typeof raw.mode === "string" && BACKGROUND_MODES.includes(raw.mode as BackgroundMode)) {
     bg.mode = raw.mode as BackgroundMode;
   }
-  if (typeof raw.color === "string") bg.color = raw.color;
-  if (typeof raw.colorEnd === "string") bg.colorEnd = raw.colorEnd;
+  const color = sanitizeCssColor(raw.color);
+  if (color !== undefined) bg.color = color;
+  const colorEnd = sanitizeCssColor(raw.colorEnd);
+  if (colorEnd !== undefined) bg.colorEnd = colorEnd;
   if (typeof raw.angle === "number" && Number.isFinite(raw.angle)) bg.angle = raw.angle;
   if (typeof raw.pattern === "string" && BACKGROUND_PATTERNS.includes(raw.pattern as BackgroundPattern)) {
     bg.pattern = raw.pattern as BackgroundPattern;
   }
-  if (typeof raw.patternColor === "string") bg.patternColor = raw.patternColor;
+  const patternColor = sanitizeCssColor(raw.patternColor);
+  if (patternColor !== undefined) bg.patternColor = patternColor;
   if (typeof raw.patternOpacity === "number" && Number.isFinite(raw.patternOpacity)) {
     bg.patternOpacity = Math.max(0, Math.min(1, raw.patternOpacity));
   }
@@ -79,7 +83,8 @@ function cleanDecorElement(value: unknown): DecorElement | undefined {
   const transform = cleanTransform(raw.transform);
   if (!transform) return undefined;
   const el: DecorElement = { id: raw.id, kind: raw.kind as DecorElementKind, transform };
-  if (typeof raw.src === "string") el.src = raw.src;
+  const src = sanitizeImageSrc(raw.src);
+  if (src !== undefined) el.src = src;
   if (typeof raw.opacity === "number" && Number.isFinite(raw.opacity)) {
     el.opacity = Math.max(0, Math.min(1, raw.opacity));
   }
@@ -89,15 +94,18 @@ function cleanDecorElement(value: unknown): DecorElement | undefined {
   if (typeof raw.shape === "string" && SHAPE_KINDS.includes(raw.shape as ShapeKind)) {
     el.shape = raw.shape as ShapeKind;
   }
-  if (typeof raw.fill === "string") el.fill = raw.fill;
-  if (typeof raw.stroke === "string") el.stroke = raw.stroke;
+  const fill = sanitizeCssColor(raw.fill);
+  if (fill !== undefined) el.fill = fill;
+  const stroke = sanitizeCssColor(raw.stroke);
+  if (stroke !== undefined) el.stroke = stroke;
   if (typeof raw.strokeWidth === "number" && Number.isFinite(raw.strokeWidth)) {
     el.strokeWidth = raw.strokeWidth;
   }
   if (typeof raw.pattern === "string" && BACKGROUND_PATTERNS.includes(raw.pattern as BackgroundPattern)) {
     el.pattern = raw.pattern as BackgroundPattern;
   }
-  if (typeof raw.patternColor === "string") el.patternColor = raw.patternColor;
+  const elPatternColor = sanitizeCssColor(raw.patternColor);
+  if (elPatternColor !== undefined) el.patternColor = elPatternColor;
   if (typeof raw.patternOpacity === "number" && Number.isFinite(raw.patternOpacity)) {
     el.patternOpacity = Math.max(0, Math.min(1, raw.patternOpacity));
   }
@@ -148,6 +156,7 @@ function cleanTextElement(value: unknown): TextElement | undefined {
   if (typeof raw.id !== "string" || !raw.id.trim()) return undefined;
   const transform = cleanTransform(raw.transform);
   if (!transform) return undefined;
+  const textColor = sanitizeCssColor(raw.color);
   return {
     id: raw.id,
     text: coerceLocalized(raw.text as unknown),
@@ -158,7 +167,7 @@ function cleanTextElement(value: unknown): TextElement | undefined {
     ...(typeof raw.fontWeight === "number" && Number.isFinite(raw.fontWeight)
       ? { fontWeight: raw.fontWeight }
       : {}),
-    ...(typeof raw.color === "string" ? { color: raw.color } : {}),
+    ...(textColor !== undefined ? { color: textColor } : {}),
     ...(raw.align === "left" || raw.align === "center" || raw.align === "right"
       ? { align: raw.align }
       : {}),
@@ -211,10 +220,21 @@ function mergeWithDefaults(parsed: Partial<ProjectState>): ProjectState {
         ]),
       )
     : {};
+  // Sanitize appIcon before spreading parsed — it ends up as an <img src>
+  const appIcon = sanitizeImageSrc(parsed.appIcon) ?? DEFAULT_PROJECT.appIcon;
+
+  // Validate locale codes (e.g. "en", "zh-CN") — used as path segments and object keys
+  const rawLocales = Array.isArray(parsed.locales) ? parsed.locales : DEFAULT_PROJECT.locales;
+  const locales = rawLocales
+    .filter((l): l is string => sanitizeLocale(l) !== undefined)
+    .map((l) => sanitizeLocale(l) as string);
+
   const merged: ProjectState = {
     ...DEFAULT_PROJECT,
     ...parsed,
     schemaVersion: PROJECT_SCHEMA_VERSION,
+    appIcon,
+    locales: locales.length > 0 ? locales : [...DEFAULT_PROJECT.locales],
     themeId,
     connectedCanvas,
     slidesByDevice: {

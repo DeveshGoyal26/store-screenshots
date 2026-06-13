@@ -7,7 +7,7 @@
     "en"
   ],
   "locale": "en",
-  "device": "iphone",
+  "device": "android",
   "orientation": "portrait",
   "appIcon": "",
   "slidesByDevice": {
@@ -15,38 +15,58 @@
       {
         "id": "starter-iphone-1",
         "layout": "hero",
-        "label": { "en": "MEET YOUR APP" },
-        "headline": { "en": "Sell one\nidea per slide." },
+        "label": {
+          "en": "MEET YOUR APP"
+        },
+        "headline": {
+          "en": "Sell one\nidea per slide."
+        },
         "screenshot": ""
       },
       {
         "id": "starter-iphone-2",
         "layout": "device-bottom",
-        "label": { "en": "FEATURE 01" },
-        "headline": { "en": "Your headline\nlives here." },
+        "label": {
+          "en": "FEATURE 01"
+        },
+        "headline": {
+          "en": "Your headline\nlives here."
+        },
         "screenshot": ""
       },
       {
         "id": "starter-iphone-3",
         "layout": "two-devices",
-        "label": { "en": "FEATURE 02" },
-        "headline": { "en": "Show two\nscreens at once." },
+        "label": {
+          "en": "FEATURE 02"
+        },
+        "headline": {
+          "en": "Show two\nscreens at once."
+        },
         "screenshot": "",
         "screenshotSecondary": ""
       },
       {
         "id": "starter-iphone-4",
         "layout": "device-top",
-        "label": { "en": "FEATURE 03" },
-        "headline": { "en": "Flip the contrast\nfor visual rhythm." },
+        "label": {
+          "en": "FEATURE 03"
+        },
+        "headline": {
+          "en": "Flip the contrast\nfor visual rhythm."
+        },
         "screenshot": "",
         "inverted": true
       },
       {
         "id": "starter-iphone-5",
         "layout": "no-device",
-        "label": { "en": "MORE" },
-        "headline": { "en": "And so\nmuch more." },
+        "label": {
+          "en": "MORE"
+        },
+        "headline": {
+          "en": "And so\nmuch more."
+        },
         "screenshot": ""
       }
     ],
@@ -54,38 +74,78 @@
       {
         "id": "starter-android-1",
         "layout": "hero",
-        "label": { "en": "MEET YOUR APP" },
-        "headline": { "en": "Sell one\nidea per slide." },
-        "screenshot": ""
+        "label": {
+          "en": "MEET YOUR APP"
+        },
+        "headline": {
+          "en": "Sell one\nidea per slide."
+        },
+        "screenshot": "",
+        "transforms": {
+          "device": {
+            "x": 200.70778097982713,
+            "y": 637.8091421552418,
+            "width": 678.5844380403457,
+            "height": 1508.459832758539,
+            "rotation": 0,
+            "zIndex": 3
+          }
+        }
       },
       {
         "id": "starter-android-2",
         "layout": "device-bottom",
-        "label": { "en": "FEATURE 01" },
-        "headline": { "en": "Your headline\nlives here." },
-        "screenshot": ""
+        "label": {
+          "en": "FEATURE 01"
+        },
+        "headline": {
+          "en": "Your headline\nlives here."
+        },
+        "screenshot": "",
+        "transforms": {
+          "device": {
+            "x": 200.70778097982702,
+            "y": 697.6094409844778,
+            "width": 678.5844380403457,
+            "height": 1508.459832758539,
+            "rotation": 0,
+            "zIndex": 3
+          }
+        }
       },
       {
         "id": "starter-android-3",
         "layout": "two-devices",
-        "label": { "en": "FEATURE 02" },
-        "headline": { "en": "Show two\nscreens at once." },
+        "label": {
+          "en": "FEATURE 02"
+        },
+        "headline": {
+          "en": "Show two\nscreens at once."
+        },
         "screenshot": "",
         "screenshotSecondary": ""
       },
       {
         "id": "starter-android-4",
         "layout": "device-top",
-        "label": { "en": "FEATURE 03" },
-        "headline": { "en": "Flip the contrast\nfor visual rhythm." },
+        "label": {
+          "en": "FEATURE 03"
+        },
+        "headline": {
+          "en": "Flip the contrast\nfor visual rhythm."
+        },
         "screenshot": "",
         "inverted": true
       },
       {
         "id": "starter-android-5",
         "layout": "no-device",
-        "label": { "en": "MORE" },
-        "headline": { "en": "And so\nmuch more." },
+        "label": {
+          "en": "MORE"
+        },
+        "headline": {
+          "en": "And so\nmuch more."
+        },
         "screenshot": ""
       }
     ],
@@ -93,22 +153,34 @@
       {
         "id": "starter-ipad-1",
         "layout": "hero",
-        "label": { "en": "MEET YOUR APP" },
-        "headline": { "en": "Made for\nthe big screen." },
+        "label": {
+          "en": "MEET YOUR APP"
+        },
+        "headline": {
+          "en": "Made for\nthe big screen."
+        },
         "screenshot": ""
       },
       {
         "id": "starter-ipad-2",
         "layout": "device-bottom",
-        "label": { "en": "FEATURE 01" },
-        "headline": { "en": "Built for\nfocus." },
+        "label": {
+          "en": "FEATURE 01"
+        },
+        "headline": {
+          "en": "Built for\nfocus."
+        },
         "screenshot": ""
       },
       {
         "id": "starter-ipad-3",
         "layout": "device-top",
-        "label": { "en": "FEATURE 02" },
-        "headline": { "en": "Always within reach." },
+        "label": {
+          "en": "FEATURE 02"
+        },
+        "headline": {
+          "en": "Always within reach."
+        },
         "screenshot": "",
         "inverted": true
       }
@@ -117,15 +189,23 @@
       {
         "id": "starter-android7-1",
         "layout": "hero",
-        "label": { "en": "MEET YOUR APP" },
-        "headline": { "en": "Pocket-sized\npower." },
+        "label": {
+          "en": "MEET YOUR APP"
+        },
+        "headline": {
+          "en": "Pocket-sized\npower."
+        },
         "screenshot": ""
       },
       {
         "id": "starter-android7-2",
         "layout": "split-landscape",
-        "label": { "en": "FEATURE 01" },
-        "headline": { "en": "Wide canvas,\nbigger ideas." },
+        "label": {
+          "en": "FEATURE 01"
+        },
+        "headline": {
+          "en": "Wide canvas,\nbigger ideas."
+        },
         "screenshot": ""
       }
     ],
@@ -133,15 +213,23 @@
       {
         "id": "starter-android10-1",
         "layout": "hero",
-        "label": { "en": "MEET YOUR APP" },
-        "headline": { "en": "Made for\nthe big screen." },
+        "label": {
+          "en": "MEET YOUR APP"
+        },
+        "headline": {
+          "en": "Made for\nthe big screen."
+        },
         "screenshot": ""
       },
       {
         "id": "starter-android10-2",
         "layout": "split-landscape",
-        "label": { "en": "FEATURE 01" },
-        "headline": { "en": "Wide canvas,\nbigger ideas." },
+        "label": {
+          "en": "FEATURE 01"
+        },
+        "headline": {
+          "en": "Wide canvas,\nbigger ideas."
+        },
         "screenshot": ""
       }
     ],
@@ -149,8 +237,12 @@
       {
         "id": "starter-feature-1",
         "layout": "split-landscape",
-        "label": { "en": "FEATURE" },
-        "headline": { "en": "Your tagline\ngoes here." },
+        "label": {
+          "en": "FEATURE"
+        },
+        "headline": {
+          "en": "Your tagline\ngoes here."
+        },
         "screenshot": ""
       }
     ],
@@ -158,29 +250,45 @@
       {
         "id": "starter-game-iphone-1",
         "layout": "split-landscape",
-        "label": { "en": "GAMEPLAY" },
-        "headline": { "en": "Action-packed\nlandscape shots." },
+        "label": {
+          "en": "GAMEPLAY"
+        },
+        "headline": {
+          "en": "Action-packed\nlandscape shots."
+        },
         "screenshot": ""
       },
       {
         "id": "starter-game-iphone-2",
         "layout": "hero",
-        "label": { "en": "FEATURED" },
-        "headline": { "en": "Show your game\nin full width." },
+        "label": {
+          "en": "FEATURED"
+        },
+        "headline": {
+          "en": "Show your game\nin full width."
+        },
         "screenshot": ""
       },
       {
         "id": "starter-game-iphone-3",
         "layout": "device-bottom",
-        "label": { "en": "LEVEL UP" },
-        "headline": { "en": "Highlight modes\nand mechanics." },
+        "label": {
+          "en": "LEVEL UP"
+        },
+        "headline": {
+          "en": "Highlight modes\nand mechanics."
+        },
         "screenshot": ""
       },
       {
         "id": "starter-game-iphone-4",
         "layout": "no-device",
-        "label": { "en": "TAGLINE" },
-        "headline": { "en": "Play now\nfor free." },
+        "label": {
+          "en": "TAGLINE"
+        },
+        "headline": {
+          "en": "Play now\nfor free."
+        },
         "screenshot": ""
       }
     ],
@@ -188,29 +296,45 @@
       {
         "id": "starter-game-android-1",
         "layout": "split-landscape",
-        "label": { "en": "GAMEPLAY" },
-        "headline": { "en": "Action-packed\nlandscape shots." },
+        "label": {
+          "en": "GAMEPLAY"
+        },
+        "headline": {
+          "en": "Action-packed\nlandscape shots."
+        },
         "screenshot": ""
       },
       {
         "id": "starter-game-android-2",
         "layout": "hero",
-        "label": { "en": "FEATURED" },
-        "headline": { "en": "Show your game\nin full width." },
+        "label": {
+          "en": "FEATURED"
+        },
+        "headline": {
+          "en": "Show your game\nin full width."
+        },
         "screenshot": ""
       },
       {
         "id": "starter-game-android-3",
         "layout": "device-bottom",
-        "label": { "en": "LEVEL UP" },
-        "headline": { "en": "Highlight modes\nand mechanics." },
+        "label": {
+          "en": "LEVEL UP"
+        },
+        "headline": {
+          "en": "Highlight modes\nand mechanics."
+        },
         "screenshot": ""
       },
       {
         "id": "starter-game-android-4",
         "layout": "no-device",
-        "label": { "en": "TAGLINE" },
-        "headline": { "en": "Play now\nfor free." },
+        "label": {
+          "en": "TAGLINE"
+        },
+        "headline": {
+          "en": "Play now\nfor free."
+        },
         "screenshot": ""
       }
     ]
