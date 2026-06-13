@@ -1,0 +1,903 @@
+{
+  "schemaVersion": 2,
+  "appName": "Loop",
+  "themeId": "loop-dark",
+  "connectedCanvas": true,
+  "locales": [
+    "en"
+  ],
+  "locale": "en",
+  "device": "iphone",
+  "orientation": "portrait",
+  "appIcon": "/app-icon.png",
+  "slidesByDevice": {
+    "iphone": [
+      {
+        "id": "loop-iphone-1",
+        "layout": "hero",
+        "label": {
+          "en": "BY MASAI"
+        },
+        "headline": {
+          "en": "Be AI-ready in\n15 minutes a day"
+        },
+        "screenshot": "/screenshots/apple/iphone/{locale}/01.png",
+        "background": {
+          "pattern": "dots",
+          "patternColor": "#610000",
+          "patternOpacity": 0.33,
+          "patternSize": 1.38,
+          "patternDotSize": 0.38,
+          "glow": true
+        },
+        "decorElements": [
+          {
+            "id": "s_mqcskn0e_i",
+            "kind": "image",
+            "transform": {
+              "x": 567.6,
+              "y": 767.7156598240479,
+              "width": 184.8,
+              "height": 184.8,
+              "rotation": 0,
+              "zIndex": 6
+            },
+            "src": "/app-icon.png",
+            "opacity": 1,
+            "borderRadius": 16
+          }
+        ]
+      },
+      {
+        "id": "loop-iphone-2",
+        "layout": "device-bottom",
+        "label": {
+          "en": "VOICE ONBOARDING"
+        },
+        "headline": {
+          "en": "Loop learns you\nin five questions"
+        },
+        "screenshot": "/screenshots/apple/iphone/{locale}/02.png",
+        "background": {
+          "pattern": "dots",
+          "patternColor": "#610000",
+          "patternOpacity": 0.33,
+          "patternSize": 1.38,
+          "patternDotSize": 0.38,
+          "glow": true
+        }
+      },
+      {
+        "id": "loop-iphone-3",
+        "layout": "device-top",
+        "label": {
+          "en": "DAILY SPRINT"
+        },
+        "headline": {
+          "en": "Fresh AI topics\nevery morning"
+        },
+        "screenshot": "/screenshots/apple/iphone/{locale}/03.png",
+        "inverted": true,
+        "transforms": {
+          "caption": {
+            "x": 105.59999999999991,
+            "y": 1990.358357771262,
+            "width": 1108.8,
+            "height": 803.0400000000001,
+            "rotation": 0,
+            "zIndex": 4
+          }
+        },
+        "background": {
+          "pattern": "dots",
+          "patternColor": "#610000",
+          "patternOpacity": 0.33,
+          "patternSize": 1.38,
+          "patternDotSize": 0.38,
+          "glow": true
+        }
+      },
+      {
+        "id": "loop-iphone-4",
+        "layout": "device-bottom",
+        "label": {
+          "en": "VIDEO LESSONS"
+        },
+        "headline": {
+          "en": "Swipe through\ntoday's lesson"
+        },
+        "screenshot": "/screenshots/apple/iphone/{locale}/04.png",
+        "transforms": {
+          "device": {
+            "x": 153.1822478386166,
+            "y": 745.68,
+            "width": 1013.6355043227666,
+            "height": 2064.96,
+            "rotation": 0,
+            "zIndex": 3,
+            "frameStyle": "flat"
+          }
+        },
+        "background": {
+          "pattern": "dots",
+          "patternColor": "#610000",
+          "patternOpacity": 0.33,
+          "patternSize": 1.38,
+          "patternDotSize": 0.38,
+          "glow": true
+        }
+      },
+      {
+        "id": "loop-iphone-5",
+        "layout": "two-devices",
+        "label": {
+          "en": "STAY SHARP"
+        },
+        "headline": {
+          "en": "Lock it in\nwith quizzes"
+        },
+        "screenshot": "/screenshots/apple/iphone/{locale}/05.png",
+        "screenshotSecondary": "/screenshots/apple/iphone/{locale}/04.png",
+        "transforms": {
+          "device": {
+            "x": 491.1333247018856,
+            "y": 670.4223343108504,
+            "width": 912.27195389049,
+            "height": 1858.4640000000002,
+            "rotation": 0,
+            "zIndex": 3,
+            "frameStyle": "flat"
+          },
+          "deviceSecondary": {
+            "x": -79.19999999999982,
+            "y": 949.8070450097847,
+            "width": 871.2,
+            "height": 1774.7929549902153,
+            "rotation": 0,
+            "zIndex": 2
+          }
+        },
+        "background": {
+          "pattern": "dots",
+          "patternColor": "#610000",
+          "patternOpacity": 0.33,
+          "patternSize": 1.38,
+          "patternDotSize": 0.38,
+          "glow": true
+        }
+      },
+      {
+        "id": "loop-iphone-6",
+        "layout": "device-top",
+        "label": {
+          "en": "LIVE COHORTS"
+        },
+        "headline": {
+          "en": "Join live\nbuild sessions"
+        },
+        "screenshot": "/screenshots/apple/iphone/{locale}/07.png",
+        "transforms": {
+          "caption": {
+            "x": 105.5,
+            "y": 1952.5108410241253,
+            "width": 1109,
+            "height": 357,
+            "rotation": 0,
+            "zIndex": 4
+          }
+        },
+        "background": {
+          "pattern": "dots",
+          "patternColor": "#610000",
+          "patternOpacity": 0.33,
+          "patternSize": 1.38,
+          "patternDotSize": 0.38,
+          "glow": true
+        }
+      },
+      {
+        "id": "loop-iphone-7",
+        "layout": "device-bottom",
+        "label": {
+          "en": "SHIP REAL WORK"
+        },
+        "headline": {
+          "en": "Replay cohort\nsessions anytime"
+        },
+        "screenshot": "/screenshots/apple/iphone/{locale}/08.png",
+        "inverted": true,
+        "background": {
+          "pattern": "dots",
+          "patternColor": "#610000",
+          "patternOpacity": 0.33,
+          "patternSize": 1.38,
+          "patternDotSize": 0.38,
+          "glow": true
+        }
+      },
+      {
+        "id": "loop-iphone-8",
+        "layout": "no-device",
+        "label": {
+          "en": "AND MORE"
+        },
+        "headline": {
+          "en": "Streaks\nQuizzes\nBadges\nLive builds"
+        },
+        "screenshot": "/screenshots/apple/iphone/{locale}/06.png",
+        "background": {
+          "pattern": "dots",
+          "patternColor": "#610000",
+          "patternOpacity": 0.33,
+          "patternSize": 1.38,
+          "patternDotSize": 0.38,
+          "glow": true
+        }
+      }
+    ],
+    "android": [
+      {
+        "id": "loop-android-1",
+        "layout": "hero",
+        "label": {
+          "en": "BY MASAI"
+        },
+        "headline": {
+          "en": "Be AI-ready in\n15 minutes a day"
+        },
+        "screenshot": "/screenshots/android/phone/{locale}/01.png",
+        "transforms": {
+          "device": {
+            "x": 143.82439024390249,
+            "y": 738.8780869035855,
+            "width": 792.351219512195,
+            "height": 1761.3577928828465,
+            "rotation": 0,
+            "zIndex": 3,
+            "frameStyle": "flat"
+          },
+          "caption": {
+            "x": 86.40000000000003,
+            "y": 133.38651026392864,
+            "width": 907.1999999999999,
+            "height": 537.6,
+            "rotation": 0,
+            "zIndex": 4
+          }
+        },
+        "background": {
+          "pattern": "dots",
+          "patternColor": "#610000",
+          "patternOpacity": 0.33,
+          "patternSize": 1.38,
+          "patternDotSize": 0.38,
+          "glow": true
+        },
+        "decorElements": [
+          {
+            "id": "s_mqcmdaye_k",
+            "kind": "image",
+            "transform": {
+              "x": 463.64340175953066,
+              "y": 499.87565982404624,
+              "width": 151.20000000000002,
+              "height": 151.20000000000002,
+              "rotation": 0,
+              "zIndex": 6
+            },
+            "src": "/app-icon.png",
+            "opacity": 1,
+            "borderRadius": 16
+          }
+        ]
+      },
+      {
+        "id": "loop-android-2",
+        "layout": "device-bottom",
+        "label": {
+          "en": "GET STARTED"
+        },
+        "headline": {
+          "en": "Start learning\nin seconds"
+        },
+        "screenshot": "/screenshots/android/phone/{locale}/02.png",
+        "background": {
+          "mode": "theme",
+          "color": "#09090B",
+          "colorEnd": "#ED0331",
+          "angle": 155,
+          "pattern": "dots",
+          "patternColor": "#610000",
+          "patternOpacity": 0.33,
+          "patternSize": 1.38,
+          "patternDotSize": 0.38,
+          "glow": true
+        },
+        "transforms": {
+          "device": {
+            "x": 143.8243902439026,
+            "y": 493.11808690358794,
+            "width": 792.351219512195,
+            "height": 1761.3577928828465,
+            "rotation": 0,
+            "zIndex": 3,
+            "frameStyle": "flat",
+            "screenshotFit": {
+              "scale": 0.9978799887868782,
+              "offsetX": 0,
+              "offsetY": 0,
+              "mode": "cover",
+              "align": "top"
+            }
+          }
+        },
+        "decorElements": [
+          {
+            "id": "s_mqcrpuhu_l",
+            "kind": "blob",
+            "transform": {
+              "x": -129.6,
+              "y": 153.6,
+              "width": 594,
+              "height": 594,
+              "rotation": 0,
+              "zIndex": 1
+            },
+            "opacity": 0.65,
+            "fill": "#09090B",
+            "blur": 56
+          },
+          {
+            "id": "s_mqcrpuhu_m",
+            "kind": "blob",
+            "transform": {
+              "x": 561.6,
+              "y": 1056,
+              "width": 518.4,
+              "height": 518.4,
+              "rotation": 0,
+              "zIndex": 1
+            },
+            "opacity": 0.45,
+            "fill": "#ED0331",
+            "blur": 72
+          },
+          {
+            "id": "s_mqcrpuhu_n",
+            "kind": "pattern",
+            "transform": {
+              "x": 669.5999999999999,
+              "y": 1305.6000000000004,
+              "width": 367.20000000000005,
+              "height": 537.6,
+              "rotation": 0,
+              "zIndex": 2
+            },
+            "pattern": "dots",
+            "patternColor": "rgba(255,255,255,0.55)",
+            "patternOpacity": 0.35,
+            "patternSize": 1.2
+          }
+        ]
+      },
+      {
+        "id": "loop-android-3",
+        "layout": "device-top",
+        "label": {
+          "en": "VOICE ONBOARDING"
+        },
+        "headline": {
+          "en": "Loop learns you\nin five questions"
+        },
+        "screenshot": "/screenshots/android/phone/{locale}/03.png",
+        "inverted": true,
+        "background": {
+          "pattern": "dots",
+          "patternColor": "#610000",
+          "patternOpacity": 0.33,
+          "patternSize": 1.38,
+          "patternDotSize": 0.38,
+          "glow": true
+        },
+        "transforms": {
+          "device": {
+            "x": 143.8243902439026,
+            "y": -336.0291271726601,
+            "width": 792.351219512195,
+            "height": 1761.3577928828465,
+            "rotation": 0,
+            "zIndex": 3,
+            "frameStyle": "flat"
+          },
+          "caption": {
+            "x": 86.40000000000009,
+            "y": 1467.5894428152492,
+            "width": 907.1999999999999,
+            "height": 537.6,
+            "rotation": 0,
+            "zIndex": 4
+          }
+        }
+      },
+      {
+        "id": "loop-android-4",
+        "layout": "device-bottom",
+        "label": {
+          "en": "DAILY SPRINT"
+        },
+        "headline": {
+          "en": "Fresh AI topics\nevery morning"
+        },
+        "screenshot": "/screenshots/android/phone/{locale}/04.png",
+        "transforms": {
+          "device": {
+            "x": 143.8243902439035,
+            "y": 555.0535707745535,
+            "width": 792.351219512195,
+            "height": 1761.3577928828465,
+            "rotation": 0,
+            "zIndex": 3,
+            "frameStyle": "flat"
+          }
+        },
+        "background": {
+          "pattern": "dots",
+          "patternColor": "#610000",
+          "patternOpacity": 0.33,
+          "patternSize": 1.38,
+          "patternDotSize": 0.38,
+          "glow": true
+        }
+      },
+      {
+        "id": "loop-android-5",
+        "layout": "device-top",
+        "label": {
+          "en": "STAY SHARP"
+        },
+        "headline": {
+          "en": "Lock it in\nwith quizzes"
+        },
+        "screenshot": "/screenshots/android/phone/{locale}/05.png",
+        "transforms": {
+          "device": {
+            "x": 143.82460957793955,
+            "y": -335.96527989953523,
+            "width": 792,
+            "height": 1760.5770491803278,
+            "rotation": 0,
+            "zIndex": 3,
+            "frameStyle": "flat"
+          },
+          "caption": {
+            "x": 89.21524926686197,
+            "y": 1537.9706744868054,
+            "width": 907.1999999999999,
+            "height": 537.6,
+            "rotation": 0,
+            "zIndex": 4
+          }
+        },
+        "background": {
+          "pattern": "dots",
+          "patternColor": "#610000",
+          "patternOpacity": 0.33,
+          "patternSize": 1.38,
+          "patternDotSize": 0.38,
+          "glow": true
+        }
+      },
+      {
+        "id": "loop-android-6",
+        "layout": "device-bottom",
+        "label": {
+          "en": "LIVE COHORTS"
+        },
+        "headline": {
+          "en": "Join live\nbuild sessions"
+        },
+        "screenshot": "/screenshots/android/phone/{locale}/07.png",
+        "inverted": true,
+        "transforms": {
+          "device": {
+            "x": 201.3720000000003,
+            "y": 550.6386742175864,
+            "width": 677.256,
+            "height": 1505.5067803278687,
+            "rotation": 0,
+            "zIndex": 3,
+            "frameStyle": "flat"
+          }
+        },
+        "background": {
+          "pattern": "dots",
+          "patternColor": "#610000",
+          "patternOpacity": 0.33,
+          "patternSize": 1.38,
+          "patternDotSize": 0.38,
+          "glow": true
+        }
+      },
+      {
+        "id": "loop-android-7",
+        "layout": "device-bottom",
+        "label": {
+          "en": "SHIP REAL WORK"
+        },
+        "headline": {
+          "en": "Replay cohort\nsessions anytime"
+        },
+        "screenshot": "/screenshots/android/phone/{locale}/08.png",
+        "transforms": {
+          "caption": {
+            "x": 86.4,
+            "y": 150.7847507331378,
+            "width": 907.2,
+            "height": 537.6,
+            "rotation": 0,
+            "zIndex": 4
+          },
+          "device": {
+            "x": 149.45488877762727,
+            "y": 526.9010781059326,
+            "width": 792.351219512195,
+            "height": 1761.3577928828465,
+            "rotation": 0,
+            "zIndex": 3,
+            "frameStyle": "flat"
+          }
+        },
+        "background": {
+          "pattern": "dots",
+          "patternColor": "#610000",
+          "patternOpacity": 0.33,
+          "patternSize": 1.38,
+          "patternDotSize": 0.38,
+          "glow": true
+        }
+      },
+      {
+        "id": "loop-android-8",
+        "layout": "no-device",
+        "label": {
+          "en": "AND MORE"
+        },
+        "headline": {
+          "en": "Streaks\nQuizzes\nBadges\nLive builds"
+        },
+        "screenshot": "/screenshots/android/phone/{locale}/06.png",
+        "transforms": {
+          "caption": {
+            "x": 108,
+            "y": 672,
+            "width": 864,
+            "height": 576,
+            "rotation": 0,
+            "zIndex": 4
+          }
+        },
+        "background": {
+          "pattern": "dots",
+          "patternColor": "#610000",
+          "patternOpacity": 0.33,
+          "patternSize": 1.38,
+          "patternDotSize": 0.38,
+          "glow": true
+        }
+      }
+    ],
+    "ipad": [
+      {
+        "id": "s_mqcjd6to_a",
+        "layout": "hero",
+        "label": {
+          "en": "MEET YOUR APP"
+        },
+        "headline": {
+          "en": "Made for\nthe big screen."
+        },
+        "screenshot": ""
+      },
+      {
+        "id": "s_mqcjd6to_b",
+        "layout": "device-bottom",
+        "label": {
+          "en": "FEATURE 01"
+        },
+        "headline": {
+          "en": "Built for\nfocus."
+        },
+        "screenshot": ""
+      },
+      {
+        "id": "s_mqcjd6to_c",
+        "layout": "device-top",
+        "label": {
+          "en": "FEATURE 02"
+        },
+        "headline": {
+          "en": "Always within reach."
+        },
+        "screenshot": "",
+        "inverted": true
+      }
+    ],
+    "android-7": [
+      {
+        "id": "s_mqcjd6to_d",
+        "layout": "hero",
+        "label": {
+          "en": "MEET YOUR APP"
+        },
+        "headline": {
+          "en": "Pocket-sized\npower."
+        },
+        "screenshot": ""
+      },
+      {
+        "id": "s_mqcjd6to_e",
+        "layout": "split-landscape",
+        "label": {
+          "en": "FEATURE 01"
+        },
+        "headline": {
+          "en": "Wide canvas,\nbigger ideas."
+        },
+        "screenshot": ""
+      }
+    ],
+    "android-10": [
+      {
+        "id": "s_mqcjd6to_f",
+        "layout": "hero",
+        "label": {
+          "en": "MEET YOUR APP"
+        },
+        "headline": {
+          "en": "Made for\nthe big screen."
+        },
+        "screenshot": ""
+      },
+      {
+        "id": "s_mqcjd6to_g",
+        "layout": "split-landscape",
+        "label": {
+          "en": "FEATURE 01"
+        },
+        "headline": {
+          "en": "Wide canvas,\nbigger ideas."
+        },
+        "screenshot": ""
+      }
+    ],
+    "feature-graphic": [
+      {
+        "id": "loop-feature",
+        "layout": "two-devices",
+        "label": {
+          "en": "Daily sprints · Live cohorts · Badges"
+        },
+        "headline": {
+          "en": "Be AI-ready in \n15 minutes a day"
+        },
+        "screenshot": "/screenshots/android/phone/{locale}/04.png",
+        "screenshotSecondary": "/screenshots/uploaded/a778878de6c0217e.png",
+        "transforms": {
+          "deviceSecondary": {
+            "x": 30.936258533935415,
+            "y": 78.0300320020838,
+            "width": 271,
+            "height": 603,
+            "rotation": 0,
+            "zIndex": 3,
+            "frameStyle": "flat"
+          },
+          "caption": {
+            "x": 245.5,
+            "y": 217.83168381204712,
+            "width": 533,
+            "height": 151,
+            "rotation": 0,
+            "zIndex": 2,
+            "textAlign": "center"
+          },
+          "device": {
+            "x": 815.0629610080375,
+            "y": -166.06441822178817,
+            "width": 245,
+            "height": 544.6229508196722,
+            "rotation": -114,
+            "zIndex": 4,
+            "frameStyle": "flat"
+          }
+        },
+        "decorElements": [
+          {
+            "id": "s_mqctsd6t_i",
+            "kind": "image",
+            "transform": {
+              "x": 456.5,
+              "y": 71.68316831683171,
+              "width": 111,
+              "height": 119,
+              "rotation": 0,
+              "zIndex": 6
+            },
+            "src": "/app-icon.png",
+            "opacity": 1,
+            "borderRadius": 16
+          }
+        ],
+        "background": {
+          "pattern": "dots",
+          "patternColor": "#e12323",
+          "patternOpacity": 0.1,
+          "patternSize": 0.4,
+          "patternDotSize": 0.29
+        }
+      }
+    ],
+    "game-iphone": [
+      {
+        "id": "s_mqctyss4_i",
+        "layout": "split-landscape",
+        "label": {
+          "en": "GAMEPLAY"
+        },
+        "headline": {
+          "en": "Action-packed\nlandscape shots."
+        },
+        "screenshot": "",
+        "transforms": {
+          "device": {
+            "x": 430.1999999999998,
+            "y": 79.20000000000005,
+            "width": 2523.84,
+            "height": 1161.6,
+            "rotation": 0,
+            "zIndex": 3
+          },
+          "caption": {
+            "x": 143.4,
+            "y": 330,
+            "width": 1089.84,
+            "height": 660,
+            "rotation": 0,
+            "zIndex": 4
+          }
+        }
+      },
+      {
+        "id": "s_mqctyss4_j",
+        "layout": "hero",
+        "label": {
+          "en": "FEATURED"
+        },
+        "headline": {
+          "en": "Show your game\nin full width."
+        },
+        "screenshot": "",
+        "transforms": {
+          "caption": {
+            "x": 229.4399999999996,
+            "y": 118.8,
+            "width": 2409.12,
+            "height": 369.6,
+            "rotation": 0,
+            "zIndex": 4
+          }
+        }
+      },
+      {
+        "id": "s_mqctyss4_k",
+        "layout": "device-bottom",
+        "label": {
+          "en": "LEVEL UP"
+        },
+        "headline": {
+          "en": "Highlight modes\nand mechanics."
+        },
+        "screenshot": "",
+        "background": {
+          "mode": "theme",
+          "color": "#09090B",
+          "colorEnd": "#ED0331"
+        },
+        "transforms": {
+          "device": {
+            "x": 172.07999999999993,
+            "y": 132.00000000000009,
+            "width": 2523.84,
+            "height": 1161.6,
+            "rotation": 0,
+            "zIndex": 3
+          }
+        }
+      },
+      {
+        "id": "s_mqctyss4_l",
+        "layout": "no-device",
+        "label": {
+          "en": "TAGLINE"
+        },
+        "headline": {
+          "en": "Play now\nfor free."
+        },
+        "screenshot": ""
+      }
+    ],
+    "game-android": [
+      {
+        "id": "s_mqctyss4_m",
+        "layout": "split-landscape",
+        "label": {
+          "en": "GAMEPLAY"
+        },
+        "headline": {
+          "en": "Action-packed\nlandscape shots."
+        },
+        "screenshot": ""
+      },
+      {
+        "id": "s_mqctyss4_n",
+        "layout": "hero",
+        "label": {
+          "en": "FEATURED"
+        },
+        "headline": {
+          "en": "Show your game\nin full width."
+        },
+        "screenshot": ""
+      },
+      {
+        "id": "s_mqctyss4_o",
+        "layout": "device-bottom",
+        "label": {
+          "en": "LEVEL UP"
+        },
+        "headline": {
+          "en": "Highlight modes\nand mechanics."
+        },
+        "screenshot": ""
+      },
+      {
+        "id": "s_mqctyss4_p",
+        "layout": "no-device",
+        "label": {
+          "en": "TAGLINE"
+        },
+        "headline": {
+          "en": "Play now\nfor free."
+        },
+        "screenshot": ""
+      }
+    ]
+  },
+  "crossScreenMockupsByDevice": {
+    "iphone": [],
+    "ipad": [],
+    "android": [],
+    "android-7": [],
+    "android-10": [],
+    "feature-graphic": [],
+    "game-iphone": [],
+    "game-android": []
+  },
+  "customFrames": [
+    {
+      "id": "s_mqctjgvj_i",
+      "name": "download",
+      "src": "/frames/uploaded/144f447a83219e6b.png",
+      "width": 2862,
+      "height": 1366,
+      "screen": {
+        "L": 8,
+        "T": 8,
+        "W": 84,
+        "H": 84,
+        "RX": 4,
+        "RY": 4
+      }
+    }
+  ]
+}
