@@ -4,81 +4,66 @@ import { Bot, Key, Send, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  AI_PROVIDERS,
+  type ProviderId,
+  defaultModel,
+  isValidModel,
+  providerById,
+} from "@/lib/ai-providers";
 import { writeLocalized } from "@/lib/locale";
 import type { ProjectState, Slide, SlideBackground, SlideLayout } from "@/lib/types";
 
-// ---------- types ----------
-
+// ── Types ─────────────────────────────────────────────────────────────────────
 type ChatMessage = { role: "user" | "assistant"; content: string };
 
 type SlidePatch = {
-  label?: string;
-  headline?: string;
-  layout?: SlideLayout;
+  label?:      string;
+  headline?:   string;
+  layout?:     SlideLayout;
   background?: Partial<SlideBackground>;
-  inverted?: boolean;
+  inverted?:   boolean;
 };
 
 type Props = {
-  activeSlide: Slide | null;
-  state: ProjectState;
-  locale: string;
+  activeSlide:  Slide | null;
+  state:        ProjectState;
+  locale:       string;
   onPatchSlide: (patch: Partial<Slide>) => void;
 };
 
-// ---------- constants ----------
+// ── localStorage keys ─────────────────────────────────────────────────────────
+const LS = {
+  provider:    "ai:provider:v1",
+  model:       "ai:model:v1",
+  key: (pid: ProviderId) => `ai:key:${pid}:v1`,
+} as const;
 
-const KEY_STORAGE = "ai-assistant:api-key:v1";
+function ls(key: string): string {
+  if (typeof window === "undefined") return "";
+  return localStorage.getItem(key) ?? "";
+}
+function lsSet(key: string, val: string) {
+  if (typeof window !== "undefined") localStorage.setItem(key, val);
+}
+function lsDel(key: string) {
+  if (typeof window !== "undefined") localStorage.removeItem(key);
+}
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
 const SUGGESTIONS = [
   "Write a punchy headline for this slide",
   "Suggest a better label for this feature",
   "Make the headline more benefit-focused",
-  "Give me 3 alternative headlines to choose from",
+  "Give me 3 alternative headlines to try",
 ];
-
-// ---------- helpers ----------
-
-function buildSystem(state: ProjectState, slide: Slide | null, locale: string): string {
-  const slideCtx = slide
-    ? `Current slide:
-  layout: ${slide.layout}
-  label: "${slide.label?.[locale] ?? ""}"
-  headline: "${slide.headline?.[locale] ?? ""}"
-  dark variant: ${slide.inverted ? "yes" : "no"}`
-    : "No slide selected.";
-
-  return `You are an AI copywriting assistant embedded in an App Store screenshot editor.
-
-App name: "${state.appName}"
-Device: ${state.device}
-Active locale: ${locale}
-
-${slideCtx}
-
-Your job: help write compelling App Store / Play Store marketing copy and make design suggestions.
-
-Available layouts: hero, device-bottom, device-top, two-devices, no-device, split-landscape
-
-When you want to suggest changes that can be applied directly to the slide, include a JSON object inside a fenced code block tagged "apply". Only include fields you want to change:
-
-\`\`\`apply
-{"headline": "Set up in 60 seconds\\nno credit card needed", "label": "ONBOARDING"}
-\`\`\`
-
-Supported patch fields:
-- headline  — string, use \\n for line breaks, 2–3 short lines max
-- label     — string, 1–3 words, ALL CAPS recommended
-- layout    — one of the available layouts listed above
-- inverted  — boolean, true = dark background variant
-
-Rules for great App Store copy:
-• Headline: benefit-first, concrete, punchy — max 6–8 words per line
-• Label: category/feature name in uppercase, 1–3 words
-• No buzzwords: avoid "seamless", "innovative", "powerful", "robust"
-• Focus on what the user gains, not what the feature does
-• Numbers beat adjectives ("30% faster" > "much faster")`;
-}
 
 function parsePatches(text: string): Array<{ marker: string; patch: SlidePatch }> {
   const out: Array<{ marker: string; patch: SlidePatch }> = [];
@@ -87,10 +72,17 @@ function parsePatches(text: string): Array<{ marker: string; patch: SlidePatch }
   while ((m = re.exec(text)) !== null) {
     try {
       const patch = JSON.parse(m[1].trim()) as SlidePatch;
-      out.push({ marker: m[0], patch });
-    } catch {
-      // malformed JSON — skip
-    }
+      // Only accept known keys to avoid unexpected mutations
+      const safe: SlidePatch = {};
+      if (typeof patch.headline === "string") safe.headline = patch.headline;
+      if (typeof patch.label    === "string") safe.label    = patch.label;
+      if (typeof patch.inverted === "boolean") safe.inverted = patch.inverted;
+      if (typeof patch.layout   === "string") safe.layout   = patch.layout as SlideLayout;
+      if (patch.background && typeof patch.background === "object") {
+        safe.background = patch.background;
+      }
+      if (Object.keys(safe).length > 0) out.push({ marker: m[0], patch: safe });
+    } catch { /* skip malformed block */ }
   }
   return out;
 }
@@ -105,15 +97,14 @@ function patchSummary(patch: SlidePatch): string {
     .join("  ·  ");
 }
 
-// ---------- sub-components ----------
-
+// ── Sub-components ────────────────────────────────────────────────────────────
 function AssistantBubble({
   message,
   slide,
   onApply,
 }: {
   message: ChatMessage;
-  slide: Slide | null;
+  slide:   Slide | null;
   onApply: (patch: SlidePatch) => void;
 }) {
   const patches = parsePatches(message.content);
@@ -126,23 +117,17 @@ function AssistantBubble({
     const before = idx > 0 ? remaining.slice(0, idx) : "";
     if (before.trim()) {
       parts.push(
-        <p key={key++} className="whitespace-pre-wrap text-xs leading-relaxed">
-          {before}
-        </p>,
+        <p key={key++} className="whitespace-pre-wrap text-xs leading-relaxed">{before}</p>,
       );
     }
     remaining = remaining.slice(idx + marker.length);
-
     parts.push(
-      <div
-        key={key++}
-        className="my-2 rounded-md border border-primary/25 bg-primary/5 p-2.5 space-y-2"
-      >
-        <p className="text-[10px] text-muted-foreground leading-snug">{patchSummary(patch)}</p>
+      <div key={key++} className="my-2 space-y-2 rounded-md border border-primary/25 bg-primary/5 p-2.5">
+        <p className="text-[10px] leading-snug text-muted-foreground">{patchSummary(patch)}</p>
         <Button
           type="button"
           size="sm"
-          className="h-7 w-full text-xs gap-1.5"
+          className="h-7 w-full gap-1.5 text-xs"
           disabled={!slide}
           onClick={() => onApply(patch)}
         >
@@ -155,9 +140,7 @@ function AssistantBubble({
 
   if (remaining.trim()) {
     parts.push(
-      <p key={key++} className="whitespace-pre-wrap text-xs leading-relaxed">
-        {remaining}
-      </p>,
+      <p key={key++} className="whitespace-pre-wrap text-xs leading-relaxed">{remaining}</p>,
     );
   }
 
@@ -171,7 +154,7 @@ function AssistantBubble({
   );
 }
 
-function TypingIndicator() {
+function TypingDots() {
   return (
     <div className="flex gap-2">
       <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-muted">
@@ -190,54 +173,143 @@ function TypingIndicator() {
   );
 }
 
-// ---------- main component ----------
-
-export function AiAssistant({ activeSlide, state, locale, onPatchSlide }: Props) {
-  const [apiKey, setApiKey] = React.useState<string>(() => {
-    if (typeof window === "undefined") return "";
-    return localStorage.getItem(KEY_STORAGE) ?? "";
-  });
+// ── Setup screen ──────────────────────────────────────────────────────────────
+function KeySetupScreen({
+  provider,
+  onProviderChange,
+  onSave,
+}: {
+  provider:         ProviderId;
+  onProviderChange: (pid: ProviderId) => void;
+  onSave:           (key: string) => void;
+}) {
   const [keyDraft, setKeyDraft] = React.useState("");
-  const [messages, setMessages] = React.useState<ChatMessage[]>([]);
-  const [input, setInput] = React.useState("");
+  const cfg = AI_PROVIDERS[provider];
+
+  return (
+    <div className="flex h-full flex-col items-center justify-center gap-4 p-5">
+      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
+        <Key className="h-5 w-5 text-muted-foreground" />
+      </div>
+
+      <div className="text-center space-y-1">
+        <p className="text-sm font-semibold">Connect your AI key</p>
+        <p className="text-[11px] leading-relaxed text-muted-foreground">
+          Your key is stored only in your browser&apos;s localStorage —
+          never sent to any server or database.
+        </p>
+      </div>
+
+      <div className="w-full space-y-2">
+        <Select value={provider} onValueChange={(v) => { onProviderChange(v as ProviderId); setKeyDraft(""); }}>
+          <SelectTrigger className="h-8 text-xs">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {(Object.entries(AI_PROVIDERS) as Array<[ProviderId, typeof AI_PROVIDERS[ProviderId]]>).map(
+              ([pid, p]) => (
+                <SelectItem key={pid} value={pid}>{p.label}</SelectItem>
+              ),
+            )}
+          </SelectContent>
+        </Select>
+
+        <Input
+          type="password"
+          placeholder={cfg.keyPlaceholder}
+          value={keyDraft}
+          autoComplete="off"
+          onChange={(e) => setKeyDraft(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && keyDraft.trim() && onSave(keyDraft.trim())}
+        />
+
+        <Button
+          className="w-full"
+          size="sm"
+          disabled={!keyDraft.trim()}
+          onClick={() => onSave(keyDraft.trim())}
+        >
+          Save key &amp; start chatting
+        </Button>
+      </div>
+
+      <p className="text-[10px] text-center leading-relaxed text-muted-foreground">
+        Get a free key at{" "}
+        <span className="font-mono">{cfg.keyHint}</span>
+      </p>
+    </div>
+  );
+}
+
+// ── Main component ────────────────────────────────────────────────────────────
+export function AiAssistant({ activeSlide, state, locale, onPatchSlide }: Props) {
+  const [provider, setProvider] = React.useState<ProviderId>(() => providerById(ls(LS.provider)));
+  const [model,    setModel]    = React.useState<string>(() => {
+    const saved = ls(LS.model);
+    const pid   = providerById(ls(LS.provider));
+    return isValidModel(pid, saved) ? saved : defaultModel(pid);
+  });
+  const [apiKey,   setApiKey]   = React.useState<string>(() => ls(LS.key(providerById(ls(LS.provider)))));
+
+  const [messages,  setMessages]  = React.useState<ChatMessage[]>([]);
+  const [input,     setInput]     = React.useState("");
   const [streaming, setStreaming] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
+  const [error,     setError]     = React.useState<string | null>(null);
 
   const bottomRef = React.useRef<HTMLDivElement>(null);
-  const abortRef = React.useRef<AbortController | null>(null);
+  const abortRef  = React.useRef<AbortController | null>(null);
 
   React.useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  function saveKey() {
-    const k = keyDraft.trim();
-    if (!k) return;
-    localStorage.setItem(KEY_STORAGE, k);
-    setApiKey(k);
-    setKeyDraft("");
+  // ── Provider / model switching ──
+  function switchProvider(pid: ProviderId) {
+    setProvider(pid);
+    lsSet(LS.provider, pid);
+    const newModel = defaultModel(pid);
+    setModel(newModel);
+    lsSet(LS.model, newModel);
+    setApiKey(ls(LS.key(pid)));
+    setMessages([]);
+    setError(null);
+  }
+
+  function switchModel(mid: string) {
+    setModel(mid);
+    lsSet(LS.model, mid);
+  }
+
+  // ── Key management ──
+  function saveKey(key: string) {
+    lsSet(LS.key(provider), key);
+    setApiKey(key);
   }
 
   function removeKey() {
-    localStorage.removeItem(KEY_STORAGE);
+    lsDel(LS.key(provider));
     setApiKey("");
     setMessages([]);
+    setError(null);
+    if (abortRef.current) { abortRef.current.abort(); abortRef.current = null; }
   }
 
+  // ── Apply AI patch to slide ──
   function applyPatch(patch: SlidePatch) {
     if (!activeSlide) return;
     const out: Partial<Slide> = {};
     if (patch.headline !== undefined)
-      out.headline = writeLocalized(activeSlide.headline, locale, patch.headline);
+      out.headline   = writeLocalized(activeSlide.headline, locale, patch.headline);
     if (patch.label !== undefined)
-      out.label = writeLocalized(activeSlide.label, locale, patch.label);
-    if (patch.layout !== undefined) out.layout = patch.layout;
+      out.label      = writeLocalized(activeSlide.label, locale, patch.label);
+    if (patch.layout   !== undefined) out.layout   = patch.layout;
     if (patch.inverted !== undefined) out.inverted = patch.inverted;
     if (patch.background !== undefined)
       out.background = { ...activeSlide.background, ...patch.background };
     onPatchSlide(out);
   }
 
+  // ── Send message ──
   async function send(text: string) {
     const trimmed = text.trim();
     if (!trimmed || !apiKey || streaming) return;
@@ -249,25 +321,39 @@ export function AiAssistant({ activeSlide, state, locale, onPatchSlide }: Props)
     setInput("");
     setStreaming(true);
 
-    // Append placeholder assistant message so streaming can update it in-place
+    // Append empty assistant placeholder so streaming updates it in-place
     setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
     abortRef.current = new AbortController();
     try {
       const res = await fetch("/api/ai", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         signal: abortRef.current.signal,
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          provider,
+          model,
           apiKey,
-          system: buildSystem(state, activeSlide, locale),
           messages: history.map(({ role, content }) => ({ role, content })),
+          context: {
+            appName: state.appName,
+            device:  state.device,
+            locale,
+            slide: activeSlide
+              ? {
+                  layout:   activeSlide.layout,
+                  label:    activeSlide.label?.[locale] ?? "",
+                  headline: activeSlide.headline?.[locale] ?? "",
+                  inverted: !!activeSlide.inverted,
+                }
+              : null,
+          },
         }),
       });
 
       if (!res.ok) {
-        const err = await res.json().catch(() => ({ error: `HTTP ${res.status}` })) as { error?: string; detail?: string };
-        throw new Error(err.detail ?? err.error ?? `HTTP ${res.status}`);
+        const err = await res.json().catch(() => ({ error: `HTTP ${res.status}` })) as { error?: string };
+        throw new Error(err.error ?? `HTTP ${res.status}`);
       }
 
       const reader = res.body?.getReader();
@@ -288,34 +374,32 @@ export function AiAssistant({ activeSlide, state, locale, onPatchSlide }: Props)
           const raw = line.slice(6).trim();
           if (raw === "[DONE]") break;
           try {
-            const ev = JSON.parse(raw) as {
-              type: string;
-              delta?: { type: string; text?: string };
-            };
-            if (ev.type === "content_block_delta" && ev.delta?.type === "text_delta" && ev.delta.text) {
-              const chunk = ev.delta.text;
+            // Our normalized format: { text } or { error }
+            const ev = JSON.parse(raw) as { text?: string; error?: string };
+            if (ev.error) throw new Error(ev.error);
+            if (ev.text) {
               setMessages((prev) => {
                 const copy = [...prev];
                 const last = copy[copy.length - 1];
-                copy[copy.length - 1] = { ...last, content: last.content + chunk };
+                copy[copy.length - 1] = { ...last, content: last.content + ev.text };
                 return copy;
               });
             }
-          } catch {
-            // malformed SSE line — ignore
+          } catch (parseErr) {
+            if (parseErr instanceof Error && parseErr.message !== "Unexpected token") {
+              throw parseErr;
+            }
           }
         }
       }
-    } catch (err) {
-      if (err instanceof Error && err.name === "AbortError") {
-        // user cancelled — remove empty assistant placeholder
+    } catch (e) {
+      if (e instanceof Error && e.name === "AbortError") {
         setMessages((prev) =>
           prev[prev.length - 1]?.content === "" ? prev.slice(0, -1) : prev,
         );
         return;
       }
-      const msg = err instanceof Error ? err.message : String(err);
-      setError(msg);
+      setError(e instanceof Error ? e.message : String(e));
       setMessages((prev) =>
         prev[prev.length - 1]?.content === "" ? prev.slice(0, -1) : prev,
       );
@@ -325,65 +409,30 @@ export function AiAssistant({ activeSlide, state, locale, onPatchSlide }: Props)
     }
   }
 
-  function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      send(input);
-    }
+  function onKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(input); }
   }
 
-  // ---------- API key setup screen ----------
-
+  // ── No key → setup screen ──
   if (!apiKey) {
     return (
-      <div className="flex h-full flex-col items-center justify-center gap-4 p-5">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
-          <Key className="h-5 w-5 text-muted-foreground" />
-        </div>
-        <div className="text-center space-y-1">
-          <p className="text-sm font-semibold">Connect your Anthropic key</p>
-          <p className="text-[11px] leading-relaxed text-muted-foreground">
-            Your key is stored only in your browser&apos;s localStorage —
-            never sent to any server or database beyond Anthropic itself.
-          </p>
-        </div>
-        <div className="w-full space-y-2">
-          <Input
-            type="password"
-            placeholder="sk-ant-api03-…"
-            value={keyDraft}
-            onChange={(e) => setKeyDraft(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && saveKey()}
-            autoComplete="off"
-          />
-          <Button
-            className="w-full"
-            size="sm"
-            disabled={!keyDraft.trim()}
-            onClick={saveKey}
-          >
-            Save key &amp; start chatting
-          </Button>
-        </div>
-        <p className="text-[10px] text-muted-foreground text-center leading-relaxed">
-          Get a free key at{" "}
-          <span className="font-mono">console.anthropic.com</span>
-          <br />
-          Only you ever see this key.
-        </p>
-      </div>
+      <KeySetupScreen
+        provider={provider}
+        onProviderChange={switchProvider}
+        onSave={saveKey}
+      />
     );
   }
 
-  // ---------- chat ----------
+  const cfg          = AI_PROVIDERS[provider];
+  const lastIsEmpty  = messages.length > 0 && messages[messages.length - 1].content === "" && streaming;
 
-  const lastIsEmpty =
-    messages.length > 0 && messages[messages.length - 1].content === "" && streaming;
-
+  // ── Chat screen ──
   return (
     <div className="flex h-full flex-col">
-      {/* status bar */}
-      <div className="flex items-center justify-between border-b px-3 py-1.5 shrink-0">
+
+      {/* Status + remove key */}
+      <div className="flex shrink-0 items-center justify-between border-b px-3 py-1.5">
         <span className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
           <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
           API key active
@@ -401,26 +450,48 @@ export function AiAssistant({ activeSlide, state, locale, onPatchSlide }: Props)
         </Button>
       </div>
 
-      {/* slide context pill */}
+      {/* Provider + model selectors */}
+      <div className="flex shrink-0 gap-1.5 border-b px-2 py-1.5">
+        <Select value={provider} onValueChange={(v) => switchProvider(v as ProviderId)}>
+          <SelectTrigger className="h-7 flex-1 text-[11px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {(Object.entries(AI_PROVIDERS) as Array<[ProviderId, typeof AI_PROVIDERS[ProviderId]]>).map(
+              ([pid, p]) => (
+                <SelectItem key={pid} value={pid} className="text-xs">{p.label}</SelectItem>
+              ),
+            )}
+          </SelectContent>
+        </Select>
+
+        <Select value={model} onValueChange={switchModel}>
+          <SelectTrigger className="h-7 flex-[2] text-[11px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {cfg.models.map((m) => (
+              <SelectItem key={m.id} value={m.id} className="text-xs">{m.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Context pill */}
       {activeSlide && (
-        <div className="border-b bg-muted/30 px-3 py-1 shrink-0">
+        <div className="shrink-0 border-b bg-muted/30 px-3 py-1">
           <p className="truncate text-[10px] text-muted-foreground">
             <span className="font-medium text-foreground">{state.appName}</span>
             {" · "}
             {activeSlide.layout}
-            {activeSlide.headline?.[locale] ? (
-              <>
-                {" · "}
-                <span className="italic">
-                  &ldquo;{activeSlide.headline[locale]?.split("\n")[0]}&rdquo;
-                </span>
-              </>
-            ) : null}
+            {activeSlide.headline?.[locale] && (
+              <> · <span className="italic">&ldquo;{activeSlide.headline[locale]?.split("\n")[0]}&rdquo;</span></>
+            )}
           </p>
         </div>
       )}
 
-      {/* message list */}
+      {/* Messages */}
       <div className="flex-1 space-y-3 overflow-y-auto p-3">
         {messages.length === 0 && (
           <div className="space-y-1.5 pt-1">
@@ -446,16 +517,11 @@ export function AiAssistant({ activeSlide, state, locale, onPatchSlide }: Props)
               </div>
             </div>
           ) : (
-            <AssistantBubble
-              key={i}
-              message={msg}
-              slide={activeSlide}
-              onApply={applyPatch}
-            />
+            <AssistantBubble key={i} message={msg} slide={activeSlide} onApply={applyPatch} />
           ),
         )}
 
-        {lastIsEmpty && <TypingIndicator />}
+        {lastIsEmpty && <TypingDots />}
 
         {error && (
           <p className="rounded-md border border-destructive/30 bg-destructive/10 px-2.5 py-2 text-[11px] text-destructive">
@@ -466,17 +532,17 @@ export function AiAssistant({ activeSlide, state, locale, onPatchSlide }: Props)
         <div ref={bottomRef} />
       </div>
 
-      {/* input */}
-      <div className="shrink-0 border-t p-2 space-y-1">
+      {/* Input */}
+      <div className="shrink-0 space-y-1 border-t p-2">
         <div className="flex gap-1.5">
           <Textarea
             rows={2}
             className="resize-none text-xs"
             placeholder="Ask AI to write copy, suggest changes…"
             value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
             disabled={streaming}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={onKeyDown}
           />
           <Button
             type="button"
@@ -489,7 +555,7 @@ export function AiAssistant({ activeSlide, state, locale, onPatchSlide }: Props)
             <Send className="h-4 w-4" />
           </Button>
         </div>
-        <p className="text-[10px] text-muted-foreground">Enter to send · Shift+Enter for new line</p>
+        <p className="text-[10px] text-muted-foreground">Enter · Shift+Enter for new line</p>
       </div>
     </div>
   );

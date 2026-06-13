@@ -4,6 +4,13 @@ import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
+// On Vercel and other read-only serverless hosts the filesystem is immutable.
+// We detect this via the VERCEL env var that Vercel sets automatically.
+// When read-only: GET still works (reads the bundled default file); POST is a
+// no-op that returns ok=true so the client doesn't show a persistent error —
+// localStorage already holds the user's work.
+const IS_READONLY = Boolean(process.env.VERCEL);
+
 const PROJECT_FILE = "app-store-screenshots.json";
 
 function filePath() {
@@ -28,6 +35,11 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  // On read-only environments, skip the write — localStorage is the source of truth.
+  if (IS_READONLY) {
+    return NextResponse.json({ ok: true, readonly: true });
+  }
+
   let body: unknown;
   try {
     body = await req.json();
