@@ -215,16 +215,6 @@ export const THEMES: Record<string, Theme> = {
     accent: "#B8794A",
     muted: "#65736B",
   },
-  "loop-dark": {
-    id: "loop-dark",
-    name: "Loop Dark",
-    bg: "#09090B",
-    bgAlt: "#F4F4F5",
-    fg: "#FAFAFA",
-    fgAlt: "#09090B",
-    accent: "#ED0331",
-    muted: "#A1A1AA",
-  },
 };
 
 export function themeById(themeId: string | undefined): Theme {
