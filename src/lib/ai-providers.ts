@@ -24,6 +24,17 @@ export const AI_PROVIDERS = {
     ],
     defaultModel: "gpt-4o-mini",
   },
+  gemini: {
+    label: "Google Gemini",
+    keyPlaceholder: "AIzaSy…",
+    keyHint: "aistudio.google.com",
+    models: [
+      { id: "gemini-2.0-flash",   label: "Gemini 2.0 Flash · fastest" },
+      { id: "gemini-1.5-flash",   label: "Gemini 1.5 Flash" },
+      { id: "gemini-1.5-pro",     label: "Gemini 1.5 Pro · most capable" },
+    ],
+    defaultModel: "gemini-2.0-flash",
+  },
 } as const;
 
 export type ProviderId = keyof typeof AI_PROVIDERS;

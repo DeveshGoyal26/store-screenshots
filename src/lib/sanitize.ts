@@ -27,7 +27,8 @@ export function sanitizeCssColor(value: unknown): string | undefined {
  * Allow only relative paths (e.g. /screenshots/en/01.png) or data: image URLs.
  * Blocks javascript:, vbscript:, data:text/html, and arbitrary remote URLs.
  */
-const SAFE_REL_PATH_RE = /^\/[a-zA-Z0-9._\-/]+$/;
+// Require single leading slash followed by safe path segments — blocks //protocol-relative URLs
+const SAFE_REL_PATH_RE = /^\/[a-zA-Z0-9._\-]+(?:\/[a-zA-Z0-9._\-]+)*$/;
 
 export function sanitizeImageSrc(value: unknown): string | undefined {
   if (typeof value !== "string") return undefined;

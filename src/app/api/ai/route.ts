@@ -24,6 +24,13 @@ const PROVIDERS = {
     models: new Set(["gpt-4o-mini", "gpt-4o", "gpt-4-turbo", "gpt-3.5-turbo"]),
     defaultModel: "gpt-4o-mini",
   },
+  // Gemini endpoint includes the model name; the base URL is expanded in the handler.
+  gemini: {
+    endpoint: "https://generativelanguage.googleapis.com/v1beta/models",
+    keyPrefix: "AIza",
+    models: new Set(["gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"]),
+    defaultModel: "gemini-2.0-flash",
+  },
 } as const;
 
 type ProviderId = keyof typeof PROVIDERS;
@@ -198,6 +205,25 @@ export async function POST(req: NextRequest) {
         },
         body: JSON.stringify({ model, max_tokens: 1024, system, messages, stream: true }),
       });
+    } else if (pid === "gemini") {
+      // Gemini endpoint: base/model:streamGenerateContent?alt=sse
+      // Roles: user→user, assistant→model (Gemini naming convention)
+      const geminiUrl = `${prov.endpoint}/${model}:streamGenerateContent?alt=sse`;
+      upstream = await fetch(geminiUrl, {
+        method: "POST",
+        headers: {
+          "x-goog-api-key": apiKey,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: system }] },
+          contents: messages.map((m) => ({
+            role: m.role === "assistant" ? "model" : m.role,
+            parts: [{ text: m.content }],
+          })),
+          generationConfig: { maxOutputTokens: 1024 },
+        }),
+      });
     } else {
       // OpenAI
       upstream = await fetch(prov.endpoint, {
@@ -262,6 +288,11 @@ export async function POST(req: NextRequest) {
                   const delta = ev.delta as Record<string, unknown> | undefined;
                   if (delta?.type === "text_delta") chunk = String(delta.text ?? "");
                 }
+              } else if (pid === "gemini") {
+                // Gemini: { candidates: [{ content: { parts: [{ text }] } }] }
+                type GeminiCandidate = { content?: { parts?: Array<{ text?: string }> } };
+                const candidates = ev.candidates as GeminiCandidate[] | undefined;
+                chunk = candidates?.[0]?.content?.parts?.[0]?.text;
               } else {
                 // OpenAI
                 const choices = ev.choices as Array<{ delta?: { content?: string } }> | undefined;
