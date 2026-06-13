@@ -533,11 +533,11 @@ export function AiAssistant({ activeSlide, state, locale, onPatchSlide }: Props)
       </div>
 
       {/* Input */}
-      <div className="shrink-0 space-y-1 border-t p-2">
-        <div className="flex gap-1.5">
+      <div className="shrink-0 border-t p-2">
+        <div className="relative rounded-md border bg-background focus-within:ring-1 focus-within:ring-ring">
           <Textarea
             rows={2}
-            className="resize-none text-xs"
+            className="resize-none border-0 bg-transparent pr-10 text-xs shadow-none focus-visible:ring-0"
             placeholder="Ask AI to write copy, suggest changes…"
             value={input}
             disabled={streaming}
@@ -546,16 +546,17 @@ export function AiAssistant({ activeSlide, state, locale, onPatchSlide }: Props)
           />
           <Button
             type="button"
+            variant="ghost"
             size="icon"
-            className="h-auto shrink-0 self-end"
+            className="absolute bottom-1.5 right-1.5 h-7 w-7 rounded-md text-muted-foreground hover:bg-primary hover:text-primary-foreground disabled:opacity-30"
             disabled={!input.trim() || streaming}
             onClick={() => send(input)}
-            title="Send"
+            title="Send (Enter)"
           >
-            <Send className="h-4 w-4" />
+            <Send className="h-3.5 w-3.5" />
           </Button>
         </div>
-        <p className="text-[10px] text-muted-foreground">Enter · Shift+Enter for new line</p>
+        <p className="mt-1 text-[10px] text-muted-foreground">Enter to send · Shift+Enter for new line</p>
       </div>
     </div>
   );
