@@ -33,6 +33,7 @@ import type {
   SelectedElement,
   Slide,
 } from "@/lib/types";
+import { AiAssistant } from "./ai-assistant";
 import { Inspector } from "./inspector";
 import { KeyboardShortcutsDialog } from "./keyboard-shortcuts-dialog";
 import { PreviewStage } from "./preview-stage";
@@ -44,6 +45,7 @@ export function ScreenshotEditor() {
   const { state, setState, hydrated, savedAt, saveError, reset, resetDevice, undo, redo } = useProject();
   const [activeSlideId, setActiveSlideId] = React.useState<string | null>(null);
   const [selectedElement, setSelectedElement] = React.useState<SelectedElement | null>(null);
+  const [rightPanel, setRightPanel] = React.useState<"inspector" | "ai">("inspector");
   const [exporting, setExporting] = React.useState<string | null>(null);
   const [ready, setReady] = React.useState(false);
   const [exportLocaleOverride, setExportLocaleOverride] = React.useState<string | null>(null);
@@ -869,36 +871,91 @@ export function ScreenshotEditor() {
           )}
         </main>
 
-        <aside className="md:w-80 w-full shrink-0 border-l bg-card md:max-h-none max-h-96 overflow-hidden">
-          {activeSlide ? (
-            <Inspector
-              slide={activeSlide}
-              device={state.device}
-              orientation={state.orientation}
-              locale={state.locale}
-              theme={theme}
-              appIcon={state.appIcon}
-              selectedElementId={
-                selectedElement?.slideId === activeSlide.id ? selectedElement.elementId : null
-              }
-              deviceEditMode={deviceEditMode}
-              onDeviceEditModeChange={(mode: DeviceEditMode) => {
-                if (!selectedElement || selectedElement.slideId !== activeSlide.id) return;
-                setSelectedElement({ ...selectedElement, deviceEditMode: mode });
-              }}
-              onChange={(patch) => patchSlide(activeSlide.id, patch)}
-              onSelectElement={(elementId) => selectElement(activeSlide.id, elementId)}
-              customFrames={state.customFrames}
-              onCustomFramesChange={(customFrames) =>
-                setState((prev) => ({ ...prev, customFrames }))
-              }
-            />
-          ) : (
-            <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-sm text-muted-foreground">
-              <p className="font-medium text-foreground">Nothing to inspect</p>
-              <p className="text-xs">Screen settings will appear here once you add or select one.</p>
-            </div>
-          )}
+        <aside className="md:w-80 w-full shrink-0 border-l bg-card md:max-h-none max-h-96 overflow-hidden flex flex-col">
+          {/* Inspector / AI tab bar */}
+          <div className="flex shrink-0 border-b">
+            <button
+              type="button"
+              className={[
+                "flex-1 px-3 py-2 text-xs font-medium transition-colors",
+                rightPanel === "inspector"
+                  ? "border-b-2 border-primary text-foreground"
+                  : "text-muted-foreground hover:text-foreground",
+              ].join(" ")}
+              onClick={() => setRightPanel("inspector")}
+            >
+              Inspector
+            </button>
+            <button
+              type="button"
+              className={[
+                "flex flex-1 items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium transition-colors",
+                rightPanel === "ai"
+                  ? "border-b-2 border-primary text-foreground"
+                  : "text-muted-foreground hover:text-foreground",
+              ].join(" ")}
+              onClick={() => setRightPanel("ai")}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-3 w-3"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+              >
+                <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
+              </svg>
+              AI
+            </button>
+          </div>
+
+          {/* Panel body */}
+          <div className="flex-1 overflow-hidden">
+            {rightPanel === "inspector" ? (
+              activeSlide ? (
+                <Inspector
+                  slide={activeSlide}
+                  device={state.device}
+                  orientation={state.orientation}
+                  locale={state.locale}
+                  theme={theme}
+                  appIcon={state.appIcon}
+                  selectedElementId={
+                    selectedElement?.slideId === activeSlide.id ? selectedElement.elementId : null
+                  }
+                  deviceEditMode={deviceEditMode}
+                  onDeviceEditModeChange={(mode: DeviceEditMode) => {
+                    if (!selectedElement || selectedElement.slideId !== activeSlide.id) return;
+                    setSelectedElement({ ...selectedElement, deviceEditMode: mode });
+                  }}
+                  onChange={(patch) => patchSlide(activeSlide.id, patch)}
+                  onSelectElement={(elementId) => selectElement(activeSlide.id, elementId)}
+                  customFrames={state.customFrames}
+                  onCustomFramesChange={(customFrames) =>
+                    setState((prev) => ({ ...prev, customFrames }))
+                  }
+                />
+              ) : (
+                <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-sm text-muted-foreground">
+                  <p className="font-medium text-foreground">Nothing to inspect</p>
+                  <p className="text-xs">Screen settings will appear here once you add or select one.</p>
+                </div>
+              )
+            ) : (
+              <AiAssistant
+                activeSlide={activeSlide}
+                state={state}
+                locale={state.locale}
+                onPatchSlide={(patch) => {
+                  if (activeSlide) patchSlide(activeSlide.id, patch);
+                }}
+              />
+            )}
+          </div>
         </aside>
       </div>
 
